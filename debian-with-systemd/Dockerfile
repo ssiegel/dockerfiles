@@ -22,7 +22,9 @@ RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/docker-apt-get-def
     \
     echo "locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8" | debconf-set-selections && \
     echo "locales locales/default_environment_locale select en_US.UTF-8" | debconf-set-selections && \
-    apt-get install locales
+    apt-get install locales &&\
+    \
+    rm /var/log/apt/* /var/log/alternatives.log /var/log/bootstrap.log /var/log/dpkg.log
 
 ADD dockerize-systemd.sh /tmp/
 RUN sh /tmp/dockerize-systemd.sh && rm /tmp/dockerize-systemd.sh
