@@ -57,3 +57,5 @@ ADD shell.service /etc/systemd/system/
 
 ENTRYPOINT ["/bin/systemd"]
 CMD []
+
+ONBUILD RUN apt-get update
