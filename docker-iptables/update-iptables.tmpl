@@ -1,0 +1,46 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+my $iptables = '/sbin/iptables -w';
+my $docker_bridge = 'docker0';
+my $docker_net = '172.17.0.0/16';
+
+my %icc = ();
+{{ range $ }}
+{{ if .Env.ICC_OVERRIDE }}
+{{ if gt (len .Addresses) 0 }}
+++$icc{'FORWARD -s {{ (index .Addresses 0).IP | js }}/32 -i '.$docker_bridge.' -o '.$docker_bridge.' -j ACCEPT'};
+++$icc{'FORWARD -d {{ (index .Addresses 0).IP | js }}/32 -i '.$docker_bridge.' -o '.$docker_bridge.' -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT'};
+{{ end }}
+{{ end }}
+{{ end }}
+
+my %snat = ();
+{{ range $ }}
+{{ if .Env.SNAT }}
+{{ if gt (len .Addresses) 0 }}
+++$snat{'POSTROUTING -s {{ (index .Addresses 0).IP | js }}/32 ! -d '.$docker_net.' -j SNAT --to-source {{ .Env.SNAT | js }}'};
+{{ end }}
+{{ end }}
+{{ end }}
+
+--$icc{$_} for  map {s/^-A //; $_}
+                grep {m@^-A FORWARD -s (?:\d+\.){3}\d+/32 -i $docker_bridge -o $docker_bridge -j ACCEPT$@}
+                `$iptables -t filter -S FORWARD`;
+
+--$icc{$_} for  map {s/^-A //; $_}
+                grep {m@^-A FORWARD -d (?:\d+\.){3}\d+/32 -i $docker_bridge -o $docker_bridge -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT$@}
+                `$iptables -t filter -S FORWARD`;
+
+--$snat{$_} for map {s/^-A //; $_}
+                grep {m@^-A POSTROUTING -s (?:\d+\.){3}\d+/32 ! -d $docker_net -j SNAT --to-source (?:\d+\.){3}\d+$@}
+                `$iptables -t nat -S POSTROUTING`;
+
+my @commands = ();
+push @commands, map {"-t filter -D $_"} grep {$icc{$_}  < 0} sort keys %icc;
+push @commands, map {"-t filter -I $_"} grep {$icc{$_}  > 0} sort keys %icc;
+push @commands, map {"-t nat -D $_"}    grep {$snat{$_} < 0} sort keys %snat;
+push @commands, map {"-t nat -I $_"}    grep {$snat{$_} > 0} sort keys %snat;
+
+system(@$_) for map {[split(' ', "$iptables $_")]} @commands;
