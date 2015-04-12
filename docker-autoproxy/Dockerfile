@@ -11,7 +11,8 @@ RUN set -ex; \
     curl -L https://github.com/jwilder/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-linux-amd64-$DOCKER_GEN_VERSION.tar.gz \
         | tar -C /usr/bin -xvz docker-gen
 
-ADD nginx.tmpl /etc/nginx/
+ADD nginx.conf /etc/nginx/
+ADD nginx-http.tmpl /etc/nginx/
 ADD error.html /usr/share/nginx/html/
 ADD docker-gen.service /etc/systemd/system/
 
@@ -25,8 +26,6 @@ RUN set -ex; \
     sed 's/{{NUM}}/404/g;s/{{NAME}}/Not Found/g;s/{{TEXT}}/&nbsp;/g'; \
     rm error.html; \
     \
-    rm /etc/nginx/nginx.conf; \
-    mkdir -p /etc/nginx/certs; \
     systemctl enable docker-gen.service
 
 ENTRYPOINT ["/bin/systemd"]

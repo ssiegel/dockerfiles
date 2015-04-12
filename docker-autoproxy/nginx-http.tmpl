@@ -5,28 +5,11 @@
   Modifications Copyright (c) 2015 Stefan Siegel
 */}}
 
-user nginx;
-worker_processes 4;
-
-error_log syslog:server=unix:/dev/log info;
-pid /var/run/nginx.pid;
-
-events {
-    worker_connections 1024;
-    # multi_accept on;
-}
-
-http {
-
-
-include       /etc/nginx/mime.types;
-default_type  application/octet-stream;
-
-log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+log_format main   '$remote_addr - $remote_user [$time_local] "$request" '
                   '$status $body_bytes_sent "$http_referer" '
                   '"$http_user_agent" "$http_x_forwarded_for"';
 
-log_format  vhost '$host $remote_addr - $remote_user [$time_local] '
+log_format vhost  '$host $remote_addr - $remote_user [$time_local] '
                   '"$request" $status $body_bytes_sent '
                   '"$http_referer" "$http_user_agent"';
 
@@ -37,18 +20,6 @@ log_format syslog '$remote_addr $host:$server_port '
 # http://nginx.org/en/docs/syslog.html
 # http://nginx.com/resources/admin-guide/logging-and-monitoring/
 access_log syslog:server=unix:/dev/log syslog;
-error_log syslog:server=unix:/dev/log info;
-
-sendfile on;
-tcp_nopush on;
-tcp_nodelay on;
-
-keepalive_timeout  65;
-types_hash_max_size 2048;
-# server_tokens off;
-
-server_names_hash_bucket_size 128;
-# server_name_in_redirect off;
 
 gzip on;
 gzip_disable "msie6";
@@ -227,5 +198,3 @@ server {
 }
 
 {{ end }}
-
-}
