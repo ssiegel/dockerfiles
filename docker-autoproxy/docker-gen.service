@@ -1,0 +1,11 @@
+[Unit]
+Description=docker-gen autoconfiguration for nginx
+Before=nginx.service
+
+[Service]
+ExecStartPre=/usr/bin/docker-gen -only-exposed /etc/nginx/nginx.tmpl /etc/nginx/nginx.conf
+ExecStart=/usr/bin/docker-gen -only-exposed -watch -notify "/usr/sbin/nginx -s reload" /etc/nginx/nginx.tmpl /etc/nginx/nginx.conf
+Restart=always
+
+[Install]
+WantedBy=nginx.service
