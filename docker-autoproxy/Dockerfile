@@ -36,13 +36,14 @@ RUN export GOPATH=/root/go && \
 ADD nginx.tmpl /opt/docker-gen/
 ADD error.html /usr/share/nginx/html/
 
-RUN cd /usr/share/nginx/html && \
-    sed 's/{{NUM}}/500/g;s/{{NAME}}/Internal Server Error/g;s/{{TEXT}}/&nbsp;/g' && \
-    sed 's/{{NUM}}/502/g;s/{{NAME}}/Bad Gateway/g;s/{{TEXT}}/&nbsp;/g' && \
-    sed 's/{{NUM}}/503/g;s/{{NAME}}/Service Temporarily Unavailable/g;s/{{TEXT}}/&nbsp;/g' && \
-    sed 's/{{NUM}}/504/g;s/{{NAME}}/Gateway Time-out/g;s/{{TEXT}}/&nbsp;/g' && \
-    sed 's/{{NUM}}/403/g;s/{{NAME}}/Forbidden/g;s/{{TEXT}}/&nbsp;/g' && \
-    sed 's/{{NUM}}/404/g;s/{{NAME}}/Not Found/g;s/{{TEXT}}/&nbsp;/g' && \
+RUN set -ex; \
+    cd /usr/share/nginx/html; \
+    sed 's/{{NUM}}/500/g;s/{{NAME}}/Internal Server Error/g;s/{{TEXT}}/&nbsp;/g'; \
+    sed 's/{{NUM}}/502/g;s/{{NAME}}/Bad Gateway/g;s/{{TEXT}}/&nbsp;/g'; \
+    sed 's/{{NUM}}/503/g;s/{{NAME}}/Service Temporarily Unavailable/g;s/{{TEXT}}/&nbsp;/g'; \
+    sed 's/{{NUM}}/504/g;s/{{NAME}}/Gateway Time-out/g;s/{{TEXT}}/&nbsp;/g'; \
+    sed 's/{{NUM}}/403/g;s/{{NAME}}/Forbidden/g;s/{{TEXT}}/&nbsp;/g'; \
+    sed 's/{{NUM}}/404/g;s/{{NAME}}/Not Found/g;s/{{TEXT}}/&nbsp;/g'; \
     rm error.html
 
 ADD supervisord.conf /etc/supervisor/conf.d/
