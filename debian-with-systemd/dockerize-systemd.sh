@@ -42,6 +42,28 @@ EOT
 systemctl set-default multi-user.target
 systemctl preset-all
 
+# Add some convenient place to drop scripts to be run before the services start
+# (e.g. to perform upgrades, fix permissions of volumes etc.)
+mkdir -p /etc/systemd/system
+cat > /etc/systemd/system/container-boot.service <<EOT
+[Unit]
+Description=Prepare container before starting services
+Before=basic.target
+After=sysinit.target
+DefaultDependencies=no
+
+[Service]
+ExecStart=/bin/run-parts -v --exit-on-error /etc/container-boot.d
+Type=oneshot
+RemainAfterExit=true
+
+[Install]
+WantedBy=basic.target
+EOT
+
+mkdir -p /etc/container-boot.d
+systemctl enable container-boot.service
+
 # Add a simple root shell, can be used with e.g. docker run -it <image> --unit=shell.service
 mkdir -p /etc/systemd/system
 cat > /etc/systemd/system/shell.service <<EOT
