@@ -31,4 +31,4 @@ RUN set -ex; \
 ENTRYPOINT ["/bin/systemd"]
 CMD []
 EXPOSE 80 443
-# docker run -d -t --name autoproxy -e ICC_OVERRIDE=1 -e SNAT={{IP1}} -p {{IP1}}:80:80 -p {{IP2}}:80:80 -v /var/run/docker.sock:/var/run/docker.sock localhost/autoproxy
+# docker run -d -it --name autoproxy -e ICC_OVERRIDE=1 -e SNAT={{IP1}} -p {{IP1}}:80:80 -p {{IP2}}:80:80 -v /var/run/docker.sock:/var/run/docker.sock localhost/autoproxy
