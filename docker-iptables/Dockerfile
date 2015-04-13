@@ -37,4 +37,3 @@ ADD supervisord.conf /etc/supervisor/conf.d/
 ADD entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []
-# docker run -d -it --privileged --net host --name iptables -v /var/run/docker.sock:/var/run/docker.sock localhost/iptables
