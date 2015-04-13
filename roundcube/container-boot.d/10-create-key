@@ -1,0 +1,10 @@
+#!/bin/sh -ex
+
+if [ ! -e /data/config.key.php ]; then
+  cat > /data/config.key.php <<EOT
+<?php
+\$config['des_key'] = hex2bin('$(od -N24 -An -vtx1 /dev/urandom | tr -dc 0-9a-f)');
+EOT
+fi
+
+chown -R www-data:www-data /data

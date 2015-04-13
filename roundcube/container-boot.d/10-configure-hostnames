@@ -1,0 +1,13 @@
+#!/bin/sh -ex
+
+# read environment of pid 1, kill newlines and handle single quotes, then pull it into our environment
+eval "$(sed -rz 's/\n//g;s/'\''/'\''\\'\'\''/g;s/^[^=]+=/export &'\''/;s/$/'\'';/' /proc/1/environ|tr '\0' '\n')"
+
+sed -ri /etc/imapproxy.conf -e "s@^server_hostname .*@server_hostname ${IMAP_HOST}@"
+sed /usr/share/nginx/roundcube/config/config.tmpl.php \
+    -e "s/{{IMAP_HOST}}/${IMAP_HOST}/" \
+    -e "s/{{SMTP_HOST}}/${SMTP_HOST}/" \
+    -e "s/{{VIRTUAL_HOST}}/${VIRTUAL_HOST}/" \
+    > /usr/share/nginx/roundcube/config/config.inc.php
+
+chown -R www-data:www-data /usr/share/nginx/roundcube

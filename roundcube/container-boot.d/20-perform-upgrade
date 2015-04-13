@@ -1,0 +1,4 @@
+#!/bin/sh -ex
+
+su www-data -s /usr/share/nginx/roundcube/bin/update.sh < /dev/null
+chmod a-x "$0"
