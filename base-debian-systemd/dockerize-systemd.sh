@@ -32,6 +32,11 @@ fi
     ln -s /dev/null /etc/systemd/system/$unit
   done
 
+sed -ri /etc/systemd/journald.conf \
+    -e 's@^#?Storage=.*@Storage=persistent@' \
+    -e 's@^#?MaxFileSec=1d.*@Storage=persistent@' \
+    -e 's@^#?MaxRetentionSec=1week.*@Storage=persistent@'
+
 # Disable preset services
 mkdir -p /etc/systemd/system-preset
 cat > /etc/systemd/system-preset/50-docker-disable-all.preset <<EOT
