@@ -13,6 +13,4 @@ RUN set -ex; \
     rm /etc/nginx/conf.d/10-realip.conf; \
     systemctl enable docker-gen.service
 
-ENTRYPOINT ["/bin/systemd"]
-CMD []
 EXPOSE 80 443

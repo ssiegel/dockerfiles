@@ -16,7 +16,4 @@ RUN set -ex; \
     echo 'fastcgi_param  PATH_TRANSLATED    $document_root$fastcgi_script_name;' >> /etc/nginx/fastcgi_params; \
     /etc/nginx/generate-error-pages.sh /usr/share/nginx/html > /etc/nginx/error_pages
 
-ENTRYPOINT ["/bin/systemd"]
-CMD []
-
 ONBUILD RUN apt-get update
