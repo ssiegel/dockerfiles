@@ -3,8 +3,8 @@ Description=docker-gen autoconfiguration for nginx
 Before=nginx.service
 
 [Service]
-ExecStartPre=/usr/bin/docker-gen -only-exposed /etc/nginx/nginx-http.tmpl /etc/nginx/nginx-http.conf
-ExecStart=/usr/bin/docker-gen -only-exposed -watch -notify "/usr/sbin/nginx -s reload" /etc/nginx/nginx-http.tmpl /etc/nginx/nginx-http.conf
+ExecStartPre=/usr/bin/docker-gen -only-exposed /etc/nginx/conf.d/autoproxy.tmpl /etc/nginx/conf.d/autoproxy.conf
+ExecStart=/usr/bin/docker-gen -only-exposed -watch -notify "/usr/sbin/nginx -s reload" /etc/nginx/conf.d/autoproxy.tmpl /etc/nginx/conf.d/autoproxy.conf
 Restart=always
 
 [Install]

@@ -5,44 +5,6 @@
   Modifications Copyright (c) 2015 Stefan Siegel
 */}}
 
-log_format main   '$remote_addr - $remote_user [$time_local] "$request" '
-                  '$status $body_bytes_sent "$http_referer" '
-                  '"$http_user_agent" "$http_x_forwarded_for"';
-
-log_format vhost  '$host $remote_addr - $remote_user [$time_local] '
-                  '"$request" $status $body_bytes_sent '
-                  '"$http_referer" "$http_user_agent"';
-
-log_format syslog '$remote_addr $host:$server_port '
-                  '"$request" $status $body_bytes_sent '
-                  '"$http_referer" "$http_user_agent"';
-
-# http://nginx.org/en/docs/syslog.html
-# http://nginx.com/resources/admin-guide/logging-and-monitoring/
-access_log syslog:server=unix:/dev/log syslog;
-
-gzip on;
-gzip_disable "msie6";
-
-# gzip_vary on;
-# gzip_proxied any;
-# gzip_comp_level 6;
-# gzip_buffers 16 8k;
-# gzip_http_version 1.1;
-gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
-
-ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS;
-
-ssl_prefer_server_ciphers on;
-ssl_session_timeout 5m;
-ssl_session_cache shared:SSL:50m;
-
-ssl_stapling on;
-ssl_stapling_verify on;
-resolver 8.8.8.8 8.8.4.4 valid=300s;
-resolver_timeout 5s;
-
 ssl_dhparam /etc/ssl/private/dhparam-2048.pem;
 ssl_trusted_certificate /etc/ssl/private/default.pem;
 ssl_certificate /etc/ssl/private/default.pem;
@@ -55,7 +17,6 @@ map $http_upgrade $proxy_connection {
   default upgrade;
   ''      '';
 }
-
 
 # HTTP 1.1 support
 proxy_http_version 1.1;
@@ -78,18 +39,7 @@ server {
 		return 503;
 	}
 
-	error_page 500 //500.html;
-	error_page 502 //502.html;
-	error_page 503 //503.html;
-	error_page 504 //504.html;
-	error_page 403 //403.html;
-	error_page 404 //404.html;
-	location = //500.html { internal; root /usr/share/nginx/html; try_files /500.html =500; }
-	location = //502.html { internal; root /usr/share/nginx/html; try_files /502.html =502; }
-	location = //503.html { internal; root /usr/share/nginx/html; try_files /503.html =503; }
-	location = //504.html { internal; root /usr/share/nginx/html; try_files /504.html =504; }
-	location = //403.html { internal; root /usr/share/nginx/html; try_files /403.html =403; }
-	location = //404.html { internal; root /usr/share/nginx/html; try_files /404.html =404; }
+	include error_pages;
 }
 
 {{ range $host, $containers := groupByMulti $ "Env.VIRTUAL_HOST" "," }}
@@ -176,18 +126,7 @@ server {
 		proxy_pass {{ $proto }}://{{ $host }};
 	}
 
-	error_page 500 //500.html;
-	error_page 502 //502.html;
-	error_page 503 //503.html;
-	error_page 504 //504.html;
-	error_page 403 //403.html;
-	error_page 404 //404.html;
-	location = //500.html { internal; root /usr/share/nginx/html; try_files /500.html =500; }
-	location = //502.html { internal; root /usr/share/nginx/html; try_files /502.html =502; }
-	location = //503.html { internal; root /usr/share/nginx/html; try_files /503.html =503; }
-	location = //504.html { internal; root /usr/share/nginx/html; try_files /504.html =504; }
-	location = //403.html { internal; root /usr/share/nginx/html; try_files /403.html =403; }
-	location = //404.html { internal; root /usr/share/nginx/html; try_files /404.html =404; }
+	include error_pages;
 }
 
 {{ end }}
