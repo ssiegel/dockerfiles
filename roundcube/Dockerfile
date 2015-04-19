@@ -1,11 +1,8 @@
-FROM ssiegel/debian-with-systemd
+FROM ssiegel/base-nginx
 MAINTAINER Stefan Siegel <ssiegel@sdas.net>
 
 RUN set -ex; \
-    echo "deb http://nginx.org/packages/mainline/debian/ wheezy nginx" > /etc/apt/sources.list.d/nginx.list; \
-    apt-key adv --keyserver pgp.mit.edu --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62; \
-    apt-get update; \
-    apt-get install curl ca-certificates nginx imapproxy \
+    apt-get install imapproxy \
         php5-fpm php5-intl php5-json php5-sqlite php5-mcrypt php5-pspell \
         aspell-de aspell-en aspell-fr
 
@@ -25,10 +22,8 @@ RUN set -ex; \
     chown -R www-data:www-data /data /usr/share/nginx/roundcube
 
 ADD container-boot.d /etc/container-boot.d/
-ADD nginx.conf /etc/nginx/
+ADD nginx.conf /etc/nginx/conf.d/
 ADD config.tmpl.php /usr/share/nginx/roundcube/config/
 
-ENTRYPOINT ["/bin/systemd"]
-CMD []
 EXPOSE 80
 # VOLUME ["/data"]
