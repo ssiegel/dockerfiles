@@ -6,11 +6,13 @@ RUN set -ex; \
         php5-fpm php5-intl php5-json php5-sqlite php5-mcrypt php5-pspell \
         aspell-de aspell-en aspell-fr
 
+ADD imapproxy.service /etc/systemd/system/
 RUN set -ex; \
     sed -ri /etc/imapproxy.conf \
         -e 's@^listen_port .*@listen_port 143@' \
         -e 's@^force_tls .*@force_tls yes@' \
         -e 's@^#?tls_ca_path .*@tls_ca_path /usr/share/ssl/certs/@'; \
+    systemctl enable imapproxy.service; \
     \
     printf '[PHP]\npost_max_size = 32M\nupload_max_filesize = 32M\n' > /etc/php5/fpm/conf.d/50-max-upload.ini; \
     printf '[Date]\ndate.timezone = "%s"\n' "$(cat /etc/timezone)" > /etc/php5/fpm/conf.d/50-timezone.ini; \
