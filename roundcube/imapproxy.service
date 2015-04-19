@@ -4,7 +4,8 @@ After=network.target
 
 [Service]
 Type=forking
-ExecStart=/bin/sh -c /usr/sbin/imapproxyd -f /etc/imapproxy.conf
+PIDFile=/run/imapproxy.pid
+ExecStart=/bin/sh -c /usr/sbin/imapproxyd -f /etc/imapproxy.conf -p /run/imapproxy.pid
 Restart=always
 
 [Install]
