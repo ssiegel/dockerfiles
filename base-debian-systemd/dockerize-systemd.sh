@@ -18,7 +18,7 @@ fi
 ) | sort -u | grep -Ev \
       `# but keep some of them:` \
       `# we want journald` \
-    -e '^systemd-journald' \
+    -e '^systemd-journal' \
       `# tmpfiles-setup to set up e.g. /var correctly` \
     -e '^systemd-tmpfiles-setup\.service$' \
       `# systemd-update-utmp is needed, cf. http://lists.freedesktop.org/archives/systemd-devel/2015-February/027952.html` \
@@ -34,8 +34,8 @@ fi
 
 sed -ri /etc/systemd/journald.conf \
     -e 's@^#?Storage=.*@Storage=persistent@' \
-    -e 's@^#?MaxFileSec=1d.*@Storage=persistent@' \
-    -e 's@^#?MaxRetentionSec=1week.*@Storage=persistent@'
+    -e 's@^#?MaxFileSec=.*@MaxFileSec=1d@' \
+    -e 's@^#?MaxRetentionSec=.*@MaxRetentionSec=1week@'
 
 # Disable preset services
 mkdir -p /etc/systemd/system-preset
