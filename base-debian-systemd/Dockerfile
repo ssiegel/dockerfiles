@@ -10,9 +10,9 @@ RUN set -ex; \
     echo 'APT::Install-Recommends "false";' >> /etc/apt/apt.conf.d/docker-apt-get-defaults; \
     echo 'APT::Install-Suggests "false";' >> /etc/apt/apt.conf.d/docker-apt-get-defaults; \
     \
-    echo "deb http://httpredir.debian.org/debian jessie main contrib non-free" > /etc/apt/sources.list; \
-    echo "deb http://httpredir.debian.org/debian jessie-updates main contrib non-free" >> /etc/apt/sources.list; \
-    echo "deb http://httpredir.debian.org/debian jessie-backports main contrib non-free" >> /etc/apt/sources.list; \
+    echo "deb http://cdn.debian.net/debian jessie main contrib non-free" > /etc/apt/sources.list; \
+    echo "deb http://cdn.debian.net/debian jessie-updates main contrib non-free" >> /etc/apt/sources.list; \
+    echo "deb http://cdn.debian.net/debian jessie-backports main contrib non-free" >> /etc/apt/sources.list; \
     echo "deb http://security.debian.org/ jessie/updates main contrib non-free" >> /etc/apt/sources.list; \
     \
     apt-get update; \
