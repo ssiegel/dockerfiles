@@ -2,7 +2,7 @@ FROM ssiegel/base-debian-systemd
 MAINTAINER Stefan Siegel <ssiegel@sdas.net>
 
 RUN set -ex; \
-    echo "deb http://nginx.org/packages/mainline/debian/ wheezy nginx" > /etc/apt/sources.list.d/nginx.list; \
+    echo "deb http://nginx.org/packages/mainline/debian/ jessie nginx" > /etc/apt/sources.list.d/nginx.list; \
     apt-key adv --keyserver pgp.mit.edu --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62; \
     apt-get update; \
     apt-get install curl ca-certificates nginx; \
